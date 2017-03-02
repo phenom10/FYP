@@ -4,6 +4,7 @@ public class Addition {
 	
 	
 	private String addResult = ""; // 'addResult to be returned to 'Main' class'
+	private String Result = "";
 	
 	public void getEquation(){
 		
@@ -12,10 +13,7 @@ public class Addition {
 		
 		//String wI = wordInput.next();
 		
-		String addEquation[] = new String[3];
-		/*char [] addend1= new char[25];
-		char [] addend2= new char[25];
-		char [] result= new char[25];*/		
+		String addEquation[] = new String[3];	
 		
 		System.out.println("Please enter your cryptarithm one word at a time." + '\n' + "First two words will be the addends and the third word will be the result" );
 		for (int i = 0; i < 3; i++){
@@ -40,11 +38,11 @@ public class Addition {
 		//checkEquation(addEquation);
 		checkUnique(eWords);
 		checkLengths(addend1, addend2, result);
+		solveEquation(eWords, addend1, addend2, result);
 	}
 	
 	public String checkUnique(String s){							//String[] gEquation
 		
-		//Arrays.sort(cEquation);
 		Boolean unique = false;
 		String lowerCase = s.toLowerCase();
 	    char cEquation[] = lowerCase.toCharArray();
@@ -64,46 +62,84 @@ public class Addition {
 		if(addResult == "false"){
 			addResult = "This equation does not meet the requirements";
 		}
+		
 		return (addResult);
 		//return (addResult);
 	}
 	
-	public void checkLengths(char[] a1, char[] a2, char[] r){
+	public String checkLengths(char[] a1, char[] a2, char[] r){
 		if (addResult == "true"){
 			if((r.length >= a1.length) && (r.length >= a2.length)){
-				addResult = "This equation meets the requirements";
+				addResult = "true";
 			}
 			else{
 				addResult = "This equation does not meet the requirements";
+				System.out.println(addResult);
 			}
 			
 		}
-		System.out.println(addResult); 
+		return (addResult); 
 	}
 	
-/*	public void checkEquation(String s) {							//String[] gEquation
+	public void solveEquation(String a, char[] b1, char[] b2, char[] r2){
+		
+		if (addResult == "true"){
+			int b1Difference = 0;
+			int b2Difference = 0;
+					
+			String uniqueChars = "";
+			
+			for (int i = 0; i < a.length(); i++){
+				if(uniqueChars.indexOf(a.charAt(i)) == -1){
+					uniqueChars = uniqueChars + a.charAt(i);
+				}
+			}
+			
+			int [] digits= {0,1,2,3,4,5,6,7,8,9};
+			int [] carry = {0,1};
+			char [] uChars = uniqueChars.toCharArray();
+			char [] b1a = new char [r2.length];
+			char [] b2a = new char [r2.length];
+			
+			char [][] sum = {b1a,b2a,r2};
+			
+			b1Difference = r2.length - b1.length;
+			for(int i = 0; i < b1Difference; i++){
+				b1a[i] = '0';
+			}
+			for(int j = 0; j < b1.length; j++){
+				for(int k = b1Difference; k < b1a.length; k++){
+					b1a[k] = b1[j];
+				}
+			}
+			
+			b2Difference = r2.length - b2.length;
+			for(int i = 0; i < b2Difference; i++){
+				b2a[i] = '0';
+			}
+			for(int j = 0; j < b2.length; j++){
+				for(int k = b2Difference; k < b2a.length; k++){
+					b2a[k] = b2[j];
+				}
+			}
+			
+							
+			
+			/*while (addResult == "true"){
 				
-		//Arrays.sort(cEquation);
-		
-		String lowerCase = s.toLowerCase();
-	    char cEquation[] = lowerCase.toCharArray();
-	    int countOfUniqueChars = s.length();
-	    for (int i = 0; i < cEquation.length; i++) {
-	        if (i != lowerCase.indexOf(cEquation[i])) {
-	            countOfUniqueChars--;
-	        }
-	    }
-	    //return countOfUniqueChars;
-		if(countOfUniqueChars <= 10){
-			addResult = "This equation is acceptable";			
-		}
+				
+			}*/
+			
+			Result = Result + sum[0][1];
+			
+			System.out.println(Result);
+			
+			}
 		else{
-			addResult = "This equation does not meet the requirements";
+			Result = addResult;
+			System.out.println(Result);
 		}
-	
-		//return (addResult);
-		System.out.println(addResult); 
-	}*/
+		}
 		
-	
+
 }
