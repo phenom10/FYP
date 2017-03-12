@@ -29,8 +29,9 @@ public class Main {
 		switch (userSelection){
 			case 1: additionOption = new Addition();
 					additionOption.getEquation();
-					additionOption.checkUnique(null);
-					additionOption.checkLengths(null,null,null);
+					/*additionOption.checkUnique(null);
+					additionOption.checkLengths(null, null, null);*/
+					//additionOption.solveEquation();
 					//System.out.println(additionOption.checkEquation(args));
 					break;
 			/*case 2: subtractionOption = new Subtraction();
