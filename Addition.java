@@ -1,48 +1,49 @@
-import java.util.Scanner;
-import java.util.Arrays;
+import java.util.*;
 public class Addition {
-	
-	
-	private String addResult = ""; // 'addResult to be returned to 'Main' class'
-	private String Result = "";
+
+	private static HashMap<Character, Integer> letters = new HashMap<Character, Integer>(); 
+	private static ArrayList<ArrayList<Integer>> combinations = new ArrayList<ArrayList<Integer>>();
+	private static int digits[]= {0,1,2,3,4,5,6,7,8,9};
+	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
+	private static String addEquation[] = new String[3];
+	private static String eWords = "";
 	
 	public void getEquation(){
 		
 		Scanner wordInput;
 		wordInput = new Scanner(System.in);
-		
-		//String wI = wordInput.next();
-		
-		String addEquation[] = new String[3];	
-		
+
 		System.out.println("Please enter your cryptarithm one word at a time." + '\n' + "First two words will be the addends and the third word will be the result" );
 		for (int i = 0; i < 3; i++){
 			System.out.println("Please enter a word: ");
 			addEquation[i] = wordInput.next();	
 		}
-		/*for (int j = 0; j < addEquation.length; j++){
-			addResult = addResult + (addEquation[j]);
-		}
-		return (addResult);*/
-		String eWords = "";
 		
 		for(int i = 0; i < addEquation.length; i++){
 			 eWords = eWords + addEquation[i];
-			//addResult = eWords;
 		}
 		
 		char [] addend1 = addEquation[0].toCharArray();
 		char [] addend2 = addEquation[1].toCharArray();
 		char [] result = addEquation[2].toCharArray();
 		
-		//checkEquation(addEquation);
 		checkUnique(eWords);
-		checkLengths(addend1, addend2, result);
-		solveEquation(eWords, addend1, addend2, result);
+		if(checkUnique(eWords) == false){
+			System.out.println("This equation has more than 10 unique characters");
+		}
+		
+		checkLengths(addend1,addend2,result);
+		if (checkLengths(addend1,addend2,result) == false){
+			System.out.println("The result word is smaller than an addend");
+		}
+		
+		if((checkUnique(eWords) == true) && (checkLengths(addend1,addend2,result) == true)){
+			solveEquation();
+		}
+	
 	}
 	
-	public String checkUnique(String s){							//String[] gEquation
-		
+	public static boolean checkUnique(String s){
 		Boolean unique = false;
 		String lowerCase = s.toLowerCase();
 	    char cEquation[] = lowerCase.toCharArray();
@@ -52,94 +53,95 @@ public class Addition {
 	            countOfUniqueChars--;
 	        }
 	    }
-	    //return countOfUniqueChars;
 		if(countOfUniqueChars <= 10){
 			 unique = true;			
 		}
-		
-		addResult = unique.toString();
-		
-		if(addResult == "false"){
-			addResult = "This equation does not meet the requirements";
-		}
-		
-		return (addResult);
-		//return (addResult);
+		return unique;
 	}
 	
-	public String checkLengths(char[] a1, char[] a2, char[] r){
-		if (addResult == "true"){
-			if((r.length >= a1.length) && (r.length >= a2.length)){
-				addResult = "true";
-			}
-			else{
-				addResult = "This equation does not meet the requirements";
-				System.out.println(addResult);
-			}
-			
+	public static boolean checkLengths(char [] a1, char [] a2, char [] r){
+		Boolean lengths = false;
+		if((r.length >= a1.length) && (r.length >= a2.length)){
+			lengths = true;
 		}
-		return (addResult); 
+		return lengths;
 	}
 	
-	public void solveEquation(String a, char[] b1, char[] b2, char[] r2){
+	public static void solveEquation(){
+		String uniqueChars = "";
 		
-		if (addResult == "true"){
-			int b1Difference = 0;
-			int b2Difference = 0;
-					
-			String uniqueChars = "";
-			
-			for (int i = 0; i < a.length(); i++){
-				if(uniqueChars.indexOf(a.charAt(i)) == -1){
-					uniqueChars = uniqueChars + a.charAt(i);
-				}
+		for (int i = 0; i < eWords.length(); i++){
+			if(uniqueChars.indexOf(eWords.charAt(i)) == -1){
+				uniqueChars = uniqueChars + eWords.charAt(i);
 			}
-			
-			int [] digits= {0,1,2,3,4,5,6,7,8,9};
-			int [] carry = {0,1};
-			char [] uChars = uniqueChars.toCharArray();
-			char [] b1a = new char [r2.length];
-			char [] b2a = new char [r2.length];
-			
-			char [][] sum = {b1a,b2a,r2};
-			
-			b1Difference = r2.length - b1.length;
-			for(int i = 0; i < b1Difference; i++){
-				b1a[i] = '0';
-			}
-			for(int j = 0; j < b1.length; j++){
-				for(int k = b1Difference; k < b1a.length; k++){
-					b1a[k] = b1[j];
-				}
-			}
-			
-			b2Difference = r2.length - b2.length;
-			for(int i = 0; i < b2Difference; i++){
-				b2a[i] = '0';
-			}
-			for(int j = 0; j < b2.length; j++){
-				for(int k = b2Difference; k < b2a.length; k++){
-					b2a[k] = b2[j];
-				}
-			}
-			
-							
-			
-			/*while (addResult == "true"){
-				
-				
-			}*/
-			
-			Result = Result + sum[0][1];
-			
-			System.out.println(Result);
-			
-			}
-		else{
-			Result = addResult;
-			System.out.println(Result);
-		}
 		}
 		
+		char [] uChars = uniqueChars.toCharArray();
+		Arrays.sort(uChars);
 
+		permutations(digits, 0);
+		
+		for(int i = 0; i < combinations.size(); i++){
+			for(int j = 0; j < uChars.length; j++){
+				letters.put(uChars[j], combinations.get(i).get(j));
+			}
+			stringVal1 = getLetterValue(addEquation[0]);
+			stringVal2 = getLetterValue(addEquation[1]);
+			stringVal3 = getLetterValue(addEquation[2]);
+			
+			if((stringVal3 == stringVal1 + stringVal2) && (getIntegerLengths() == true) && (count < 1)){ 
+				System.out.println("Your equation is " + addEquation[0] + " + " + addEquation[1] + " = " + addEquation[2]);
+				System.out.println("The result is " + stringVal1 + " + " + stringVal2 + " = " + stringVal3);
+				System.out.println("The letter substitutions are: ");
+				for(Character l: letters.keySet()){
+					System.out.println(l + " = " + letters.get(l));
+				}
+				count++;
+			}
+		}
+		
+	}
+	
+	public static void permutations(int []a, int k){
+		if(k==a.length)
+		{
+			ArrayList<Integer> combos = new ArrayList<Integer>();
+			for(int i=0;i<a.length;i++)
+			{
+				combos.add(a[i]);
+			}
+			combinations.add(combos);
+		}	
+		else
+		{	
+			for (int i = k; i < a.length; i++)
+			{
+				int temp=a[k];
+				a[k]=a[i];
+				a[i]=temp;
+				permutations(a,k+1);
+				temp=a[k];
+				a[k]=a[i];
+				a[i]=temp;
+			}
+		}
+	}
+	
+	public static int getLetterValue(String word){
+		String temp = "";
+		for(int i = 0; i < word.length(); i++){
+			temp = temp + letters.get(word.charAt(i));
+		}
+		return Integer.parseInt(temp);
+	}
+	
+	public static boolean getIntegerLengths(){
+		boolean intLength = false;
+		if((String.valueOf(stringVal1).length() == addEquation[0].length()) && (String.valueOf(stringVal2).length() == addEquation[1].length()) && (String.valueOf(stringVal3).length() == addEquation[2].length())){
+			intLength = true;
+		}
+		
+		return intLength;
+	}
+	
 }
