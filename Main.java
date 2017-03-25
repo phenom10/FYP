@@ -5,6 +5,7 @@ public class Main {
 
 	public static void main(String[] args){
 		Addition additionOption;
+		Subtraction subtractionOption;
 		//Subtraction subtractionOption;
 		
 		Scanner selection;
@@ -29,13 +30,10 @@ public class Main {
 		switch (userSelection){
 			case 1: additionOption = new Addition();
 					additionOption.getEquation();
-					/*additionOption.checkUnique(null);
-					additionOption.checkLengths(null, null, null);*/
-					//additionOption.solveEquation();
-					//System.out.println(additionOption.checkEquation(args));
 					break;
-			/*case 2: subtractionOption = new Subtraction();
-					break;*/
+			case 2: subtractionOption = new Subtraction();
+					subtractionOption.getEquation();
+					break;
 			case 3: System.exit(1);
 					break;
 			default: System.out.print("You have entered an invalid option");
