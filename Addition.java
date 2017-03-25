@@ -1,12 +1,14 @@
 import java.util.*;
+
 public class Addition {
 
 	private static HashMap<Character, Integer> letters = new HashMap<Character, Integer>(); 
 	private static ArrayList<ArrayList<Integer>> combinations = new ArrayList<ArrayList<Integer>>();
-	private static int digits[]= {0,1,2,3,4,5,6,7,8,9};
+	private static ArrayList<Integer> digits= new ArrayList<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8,9));
 	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
 	private static String addEquation[] = new String[3];
 	private static String eWords = "";
+	private static boolean solutionFound = false;
 	
 	public void getEquation(){
 		
@@ -90,40 +92,39 @@ public class Addition {
 			stringVal3 = getLetterValue(addEquation[2]);
 			
 			if((stringVal3 == stringVal1 + stringVal2) && (getIntegerLengths() == true) && (count < 1)){ 
+				solutionFound = true;
 				System.out.println("Your equation is " + addEquation[0] + " + " + addEquation[1] + " = " + addEquation[2]);
 				System.out.println("The result is " + stringVal1 + " + " + stringVal2 + " = " + stringVal3);
 				System.out.println("The letter substitutions are: ");
 				for(Character l: letters.keySet()){
-					System.out.println(l + " = " + letters.get(l));
+					System.out.print(l + " = " + letters.get(l)+";" + " ");
 				}
 				count++;
 			}
 		}
+		if(!solutionFound){
+			System.out.println("A solution could not be found");
+		}
 		
 	}
 	
-	public static void permutations(int []a, int k){
-		if(k==a.length)
+	public static void permutations(ArrayList<Integer> vals, int k ){
+		if(k == vals.size() -1)
 		{
 			ArrayList<Integer> combos = new ArrayList<Integer>();
-			for(int i=0;i<a.length;i++)
+			for(int i: vals)
 			{
-				combos.add(a[i]);
+				combos.add(vals.get(i));
 			}
 			combinations.add(combos);
 		}	
 		else
 		{	
-			for (int i = k; i < a.length; i++)
-			{
-				int temp=a[k];
-				a[k]=a[i];
-				a[i]=temp;
-				permutations(a,k+1);
-				temp=a[k];
-				a[k]=a[i];
-				a[i]=temp;
-			}
+			for(int i = k; i < vals.size(); i++){
+	            java.util.Collections.swap(vals, i, k);
+	            permutations(vals, k+1);
+	            java.util.Collections.swap(vals, k, i);
+	        }
 		}
 	}
 	
