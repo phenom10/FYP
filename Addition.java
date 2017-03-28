@@ -4,7 +4,7 @@ public class Addition {
 
 	private static HashMap<Character, Integer> letters = new HashMap<Character, Integer>(); 
 	private static ArrayList<ArrayList<Integer>> combinations = new ArrayList<ArrayList<Integer>>();
-	private static ArrayList<Integer> digits= new ArrayList<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8,9));
+	private static int digits[]= {0,1,2,3,4,5,6,7,8,9};
 	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
 	private static String addEquation[] = new String[3];
 	private static String eWords = "";
@@ -29,6 +29,16 @@ public class Addition {
 		char [] addend2 = addEquation[1].toCharArray();
 		char [] result = addEquation[2].toCharArray();
 		
+		checkIsDigit(eWords);
+		if(checkIsDigit(eWords) == false){
+			System.out.println("You entered a digit(s) for a character(s)");
+		}
+			
+		checkIsSpecial(eWords);
+		if(checkIsSpecial(eWords) == false){
+			System.out.println("You entered a special character(s)");
+		}
+		
 		checkUnique(eWords);
 		if(checkUnique(eWords) == false){
 			System.out.println("This equation has more than 10 unique characters");
@@ -39,10 +49,30 @@ public class Addition {
 			System.out.println("The result word is smaller than an addend");
 		}
 		
-		if((checkUnique(eWords) == true) && (checkLengths(addend1,addend2,result) == true)){
+		if((checkUnique(eWords) == true) && (checkLengths(addend1,addend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
 			solveEquation();
 		}
+		
+	}
 	
+	public static boolean checkIsDigit(String characters){
+		Boolean character = true;
+		for(int i = 0; i < characters.length(); i++){
+			if(Character.isDigit(characters.charAt(i))){
+				character = false;
+			}
+		}
+		return character;
+	}		
+	
+	public static boolean checkIsSpecial(String specialChar){
+		Boolean special = true;
+		for(int i = 0; i < specialChar.length(); i++){
+			if(!Character.isLetterOrDigit(specialChar.charAt(i))){
+				special = false;
+			}
+		}
+		return special;
 	}
 	
 	public static boolean checkUnique(String s){
@@ -81,7 +111,7 @@ public class Addition {
 		char [] uChars = uniqueChars.toCharArray();
 		Arrays.sort(uChars);
 
-		permutations(digits, 0);
+		permutations(digits, 0, digits.length-1);
 		
 		for(int i = 0; i < combinations.size(); i++){
 			for(int j = 0; j < uChars.length; j++){
@@ -108,23 +138,30 @@ public class Addition {
 		
 	}
 	
-	public static void permutations(ArrayList<Integer> vals, int k ){
-		if(k == vals.size() -1)
+	public static void swap(int[]vals, int x , int y){
+		int temp = vals[x];
+        vals[x] = vals[y];
+        vals[y] = temp;
+	}
+	
+	public static void permutations(int []a, int k, int n ){
+		if(k == n)
 		{
 			ArrayList<Integer> combos = new ArrayList<Integer>();
-			for(int i: vals)
+			for(int i = 0; i < a.length; i++)
 			{
-				combos.add(vals.get(i));
+				combos.add(a[i]);
 			}
 			combinations.add(combos);
 		}	
 		else
 		{	
-			for(int i = k; i < vals.size(); i++){
-	            java.util.Collections.swap(vals, i, k);
-	            permutations(vals, k+1);
-	            java.util.Collections.swap(vals, k, i);
-	        }
+			for (int j = k; j <= n; j++)
+				 	{
+				 		swap(a, k, j);
+				 		permutations(a, k + 1, n);
+				 		swap(a, k, j);
+				 	}
 		}
 	}
 	
