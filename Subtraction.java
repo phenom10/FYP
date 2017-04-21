@@ -5,6 +5,7 @@ public class Subtraction {
 	private static HashMap<Character, Integer> letters = new HashMap<Character, Integer>(); 
 	private static ArrayList<ArrayList<Integer>> combinations = new ArrayList<ArrayList<Integer>>();
 	private static int digits[]= {0,1,2,3,4,5,6,7,8,9};
+	private static ArrayList<Character> uChars = new ArrayList<Character>();
 	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
 	private static String subEquation[] = new String[3];
 	private static String eWords = "";
@@ -19,6 +20,7 @@ public class Subtraction {
 		for (int i = 0; i < 3; i++){
 			System.out.println("Please enter a word: ");
 			subEquation[i] = wordInput.next();	
+			subEquation[i] = subEquation[i].toLowerCase();
 		}
 		
 		for(int i = 0; i < subEquation.length; i++){
@@ -46,10 +48,15 @@ public class Subtraction {
 		
 		checkLengths(subtrahend1,subtrahend2,result);
 		if (checkLengths(subtrahend1,subtrahend2,result) == false){
-			System.out.println("The result word is bigger than a subtrahend");
+			System.out.println("The result word is bigger than the first subtrahend");
 		}
 		
-		if((checkUnique(eWords) == true) && (checkLengths(subtrahend1,subtrahend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
+		checkLengths2(subtrahend1,subtrahend2,result);
+		if (checkLengths2(subtrahend1,subtrahend2,result) == false){
+			System.out.println("The second subtrahend is bigger than both the first subtrahend and the result word");
+		}
+		
+		if((checkUnique(eWords) == true) && (checkLengths(subtrahend1,subtrahend2,result) == true) && checkLengths2(subtrahend1,subtrahend2,result) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
 			solveEquation();
 		}
 	
@@ -93,10 +100,18 @@ public class Subtraction {
 	
 	public static boolean checkLengths(char [] a1, char [] a2, char [] r){
 		Boolean lengths = false;
-		if((r.length <= a1.length) && (r.length <= a2.length)){
+		if(r.length <= a1.length){
 			lengths = true;
 		}
 		return lengths;
+	}
+	
+	public static boolean checkLengths2(char [] b1, char [] b2, char [] r2){
+		Boolean lengths2 = false;
+		if(b2.length <= b1.length){
+			lengths2 = true;
+		}
+		return lengths2;
 	}
 	
 	public static void solveEquation(){
@@ -108,20 +123,26 @@ public class Subtraction {
 			}
 		}
 		
-		char [] uChars = uniqueChars.toCharArray();
-		Arrays.sort(uChars);
+		char uniChars[] = uniqueChars.toCharArray();
+		Arrays.sort(uniChars);
+		
+		for(char c : uniChars){
+			uChars.add(c);
+		}
+		
+		search();
 
 		permutations(digits, 0, digits.length-1);
 		
 		for(int i = 0; i < combinations.size(); i++){
-			for(int j = 0; j < uChars.length; j++){
-				letters.put(uChars[j], combinations.get(i).get(j));
+			for(int j = 0; j < uChars.size(); j++){
+				letters.put(uChars.get(j), combinations.get(i).get(j));
 			}
 			stringVal1 = getLetterValue(subEquation[0]);
 			stringVal2 = getLetterValue(subEquation[1]);
 			stringVal3 = getLetterValue(subEquation[2]);
 			
-			if((stringVal3 == stringVal1 - stringVal2) && (getIntegerLengths() == true) && (count < 1)){ 
+			if((stringVal1 - stringVal2 == stringVal3) && (getIntegerLengths() == true) && (count < 1)){ 
 				solutionFound = true;
 				System.out.println("Your equation is " + subEquation[0] + " - " + subEquation[1] + " = " + subEquation[2]);
 				System.out.println("The result is " + stringVal1 + " - " + stringVal2 + " = " + stringVal3);
@@ -163,6 +184,74 @@ public class Subtraction {
 				 		swap(a, k, j);
 				 	}
 		}
+	}
+	
+	public static void search(){
+		boolean search1 = false;
+		
+		if(((subEquation[0].length() - subEquation[1].length()) >= 1) && (((subEquation[0].length() - subEquation[2].length()) >= 1))){
+			letters.put(subEquation[0].charAt(0), 1);
+			letters.put(subEquation[0].charAt(1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			
+			for(int i = 0; i < uChars.size(); i++){
+				if(subEquation[0].charAt(0) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			
+			for(int j = 0; j < uChars.size(); j++){
+				if(subEquation[0].charAt(1) == uChars.get(j)){
+					uChars.remove(j);
+				}
+			}
+			search1 = true;
+		}
+		
+		if((subEquation[0].charAt(subEquation[0].length()-1) == subEquation[2].charAt(subEquation[2].length()-1)) && (search1 == true)){
+			letters.remove(subEquation[0].charAt(1));
+			letters.put(subEquation[1].charAt(subEquation[1].length()-1), 0);
+			digits = new int[] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subEquation[1].charAt(subEquation[1].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(subEquation[0].charAt(1));
+		}
+		
+		if((subEquation[0].charAt(subEquation[0].length()-1) == subEquation[2].charAt(subEquation[2].length()-1)) && (search1 == false)){
+			letters.put(subEquation[1].charAt(subEquation[1].length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subEquation[1].charAt(subEquation[1].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		
+		if ((subEquation[0].charAt(subEquation[0].length()-1) == subEquation[2].charAt(subEquation[2].length()-1)) && (subEquation[1].charAt(subEquation[1].length()-1) == subEquation[2].charAt(subEquation[2].length()-1) && (search1 == true))){
+			letters.remove(subEquation[0].charAt(1));
+			letters.put(subEquation[0].charAt(subEquation[0].length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subEquation[0].charAt(subEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(subEquation[0].charAt(1));
+		}
+		
+		if((subEquation[0].charAt(subEquation[0].length()-1) == subEquation[2].charAt(subEquation[2].length()-1)) && (subEquation[1].charAt(subEquation[1].length()-1) == subEquation[2].charAt(subEquation[2].length()-1) && (search1 == false))){
+			letters.put(subEquation[0].charAt(subEquation[0].length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subEquation[0].charAt(subEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		
 	}
 	
 	public static int getLetterValue(String word){
