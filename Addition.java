@@ -7,7 +7,9 @@ public class Addition {
 	private static int digits[]= {0,1,2,3,4,5,6,7,8,9};
 	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
 	private static String addEquation[] = new String[3];
+	private static ArrayList<Character> uChars = new ArrayList<Character>();
 	private static String eWords = "";
+	private static char [] addend1, addend2, result;
 	private static boolean solutionFound = false;
 	
 	public void getEquation(){
@@ -15,19 +17,20 @@ public class Addition {
 		Scanner wordInput;
 		wordInput = new Scanner(System.in);
 
-		System.out.println("Please enter your cryptarithm one word at a time." + '\n' + "First two words will be the addends and the third word will be the result" );
+		System.out.println("Please enter your cryptarithm one word at a time." + '\n' + "First two words will be the addends and the third word will be the result");
 		for (int i = 0; i < 3; i++){
 			System.out.println("Please enter a word: ");
 			addEquation[i] = wordInput.next();	
+			addEquation[i] = addEquation[i].toLowerCase();
 		}
 		
 		for(int i = 0; i < addEquation.length; i++){
 			 eWords = eWords + addEquation[i];
 		}
 		
-		char [] addend1 = addEquation[0].toCharArray();
-		char [] addend2 = addEquation[1].toCharArray();
-		char [] result = addEquation[2].toCharArray();
+		addend1 = addEquation[0].toCharArray();
+		addend2 = addEquation[1].toCharArray();
+		result = addEquation[2].toCharArray();
 		
 		checkIsDigit(eWords);
 		if(checkIsDigit(eWords) == false){
@@ -108,20 +111,26 @@ public class Addition {
 			}
 		}
 		
-		char [] uChars = uniqueChars.toCharArray();
-		Arrays.sort(uChars);
+		char uniChars[] = uniqueChars.toCharArray();
+		Arrays.sort(uniChars);
+		
+		for(char c : uniChars){
+			uChars.add(c);
+		}
+		
+		search();
 
 		permutations(digits, 0, digits.length-1);
 		
 		for(int i = 0; i < combinations.size(); i++){
-			for(int j = 0; j < uChars.length; j++){
-				letters.put(uChars[j], combinations.get(i).get(j));
+			for(int j = 0; j < uChars.size(); j++){
+				letters.put(uChars.get(j), combinations.get(i).get(j));
 			}
 			stringVal1 = getLetterValue(addEquation[0]);
 			stringVal2 = getLetterValue(addEquation[1]);
 			stringVal3 = getLetterValue(addEquation[2]);
 			
-			if((stringVal3 == stringVal1 + stringVal2) && (getIntegerLengths() == true) && (count < 1)){ 
+			if((stringVal1 + stringVal2 == stringVal3) && (getIntegerLengths() == true) && (count < 1)){ 
 				solutionFound = true;
 				System.out.println("Your equation is " + addEquation[0] + " + " + addEquation[1] + " = " + addEquation[2]);
 				System.out.println("The result is " + stringVal1 + " + " + stringVal2 + " = " + stringVal3);
@@ -136,6 +145,106 @@ public class Addition {
 			System.out.println("A solution could not be found");
 		}
 		
+	}
+	
+	public static void search(){
+		boolean search1 = false;
+		
+		if(((addEquation[2].length() - addEquation[0].length()) >= 1) && (((addEquation[2].length() - addEquation[1].length()) >= 1))){
+			letters.put(addEquation[2].charAt(0), 1);
+			letters.put(addEquation[2].charAt(1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[2].charAt(0) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			
+			for(int j = 0; j < uChars.size(); j++){
+				if(addEquation[2].charAt(1) == uChars.get(j)){
+					uChars.remove(j);
+				}
+			}
+			search1 = true;
+			
+			/*for(int i = 0; i < uChars.size(); i++){
+				System.out.print(uChars.get(i) + " ");
+			}
+			
+			for(int j = 0; j < digits.length; j++){
+				System.out.print(digits[j] + " ");
+			}
+			for(Character l: letters.keySet()){
+				System.out.print(l + " = " + letters.get(l)+";" + " ");
+			}*/
+		}
+		if ((addEquation[0].charAt(addEquation[0].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (search1 == true)){
+			letters.remove(addEquation[2].charAt(1));
+			letters.put(addEquation[1].charAt(addEquation[1].length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[1].charAt(addEquation[1].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(addEquation[2].charAt(1));
+		}
+		if((addEquation[0].charAt(addEquation[0].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (search1 == false)){
+			letters.put(addEquation[1].charAt(addEquation[1].length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[1].charAt(addEquation[1].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		if ((addEquation[1].charAt(addEquation[1].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (search1 == true)){
+			letters.remove(addEquation[2].charAt(1));
+			letters.put(addEquation[0].charAt(addEquation[0].length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[0].charAt(addEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(addEquation[2].charAt(1));
+		}
+		if((addEquation[1].charAt(addEquation[1].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (search1 == false)){
+			letters.put(addEquation[0].charAt(addEquation[0].length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[0].charAt(addEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		if ((addEquation[0].charAt(addEquation[0].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (addEquation[1].charAt(addEquation[1].length()-1) == addEquation[2].charAt(addEquation[2].length()-1) && (search1 == true))){
+			letters.remove(addEquation[2].charAt(1));
+			letters.put(addEquation[0].charAt(addEquation[0].length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[0].charAt(addEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(addEquation[2].charAt(1));
+		}
+		if((addEquation[0].charAt(addEquation[0].length()-1) == addEquation[2].charAt(addEquation[2].length()-1)) && (addEquation[1].charAt(addEquation[1].length()-1) == addEquation[2].charAt(addEquation[2].length()-1) && (search1 == false))){
+			letters.put(addEquation[0].charAt(addEquation[0].length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addEquation[0].charAt(addEquation[0].length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		
+		/*else{
+			for(int i = 0; i < digits.length; i++){
+				System.out.print(digits[i] + " ");
+			}
+		}*/
 	}
 	
 	public static void swap(int[]vals, int x , int y){
@@ -181,5 +290,8 @@ public class Addition {
 		
 		return intLength;
 	}
-	
 }
+
+// add multiplication and three word inputs
+// ask if there's another word
+// reset button for gui
