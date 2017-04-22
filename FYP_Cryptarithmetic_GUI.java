@@ -124,7 +124,7 @@ public class FYP_Cryptarithmetic_GUI{
 			stringVal2 = getLetterValue(addend2);
 			stringVal3 = getLetterValue(result);
 			
-			if((stringVal3 == stringVal1 + stringVal2) && (getIntegerLengths() == true) && (count < 1)){ 
+			if((stringVal1 + stringVal2 == stringVal3) && (getIntegerLengths() == true) && (count < 1)){ 
 				solutionFound = true;
 				answer.setText("Your equation is " + addend1 + " + " + addend2 + " = " + result + "\n");
 				answer.append("The result is " + stringVal1 + " + " + stringVal2 + " = " + stringVal3 + "\n");
@@ -163,7 +163,7 @@ public class FYP_Cryptarithmetic_GUI{
 			stringVal2 = getLetterValue(subtrahend2);
 			stringVal3 = getLetterValue(result);
 			
-			if((stringVal3 == stringVal1 - stringVal2) && (getSubIntegerLengths() == true) && (count < 1)){ 
+			if((stringVal1 - stringVal2 == stringVal3) && (getSubIntegerLengths() == true) && (count < 1)){ 
 				solutionFound = true;
 				answer.setText("Your equation is " + subtrahend1 + " - " + subtrahend2 + " = " + result + "\n");
 				answer.append("The result is " + stringVal1 + " - " + stringVal2 + " = " + stringVal3 + "\n");
@@ -289,11 +289,12 @@ public class FYP_Cryptarithmetic_GUI{
 		btnAddition.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				addend1 = word1.getText();
-				addend2 = word2.getText();
-				result = word3.getText();
+				addend1 = word1.getText().toLowerCase();
+				addend2 = word2.getText().toLowerCase();
+				result = word3.getText().toLowerCase();
 				
 				eWords = addend1 + addend2 + result;
+				
 				checkIsDigit(eWords);
 				if(checkIsDigit(eWords) == false){
 					answer.setText("You entered a digit(s) for a character(s)" + "\n");
@@ -318,17 +319,18 @@ public class FYP_Cryptarithmetic_GUI{
 				}
 			}
 		});
-		btnAddition.setBounds(142, 184, 117, 51);
+		btnAddition.setBounds(46, 184, 117, 51);
 		frame.getContentPane().add(btnAddition);
 		
 		JButton btnSubtraction = new JButton("Subtraction");
 		btnSubtraction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				subtrahend1 = word1.getText();
-				subtrahend2 = word2.getText();
-				result = word3.getText();
+				subtrahend1 = word1.getText().toLowerCase();
+				subtrahend2 = word2.getText().toLowerCase();
+				result = word3.getText().toLowerCase();
 				
 				eWords = subtrahend1 + subtrahend2 + result;
+				
 				checkIsDigit(eWords);
 				if(checkIsDigit(eWords) == false){
 					answer.setText("You entered a digit(s) for a character(s)" + "\n");
@@ -354,16 +356,31 @@ public class FYP_Cryptarithmetic_GUI{
 				}
 			}
 		});
-		btnSubtraction.setBounds(372, 184, 117, 51);
+		btnSubtraction.setBounds(271, 184, 117, 51);
 		frame.getContentPane().add(btnSubtraction);
 		
 		lblThisIsYour = new JLabel("Here's your answer:");
-		lblThisIsYour.setBounds(94, 287, 165, 28);
+		lblThisIsYour.setBounds(125, 287, 165, 28);
 		frame.getContentPane().add(lblThisIsYour);
 		
 		answer = new JTextArea();
-		answer.setBounds(269, 257, 370, 96);
+		answer.setEditable(false);
+		answer.setBounds(262, 257, 370, 96);
 		frame.getContentPane().add(answer);
 		answer.setColumns(10);
+		
+		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				restart();
+			}
+		});
+		btnReset.setBounds(480, 184, 117, 51);
+		frame.getContentPane().add(btnReset);
+	}
+	
+	public static void restart(){
+		FYP_Cryptarithmetic_GUI restart = new FYP_Cryptarithmetic_GUI();
+		restart.initialize();
 	}
 }
