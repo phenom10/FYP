@@ -22,6 +22,7 @@ public class FYP_Cryptarithmetic_GUI{
 	private static int stringVal1, stringVal2, stringVal3, count = 0; 	
 	private static String addend1, addend2, subtrahend1, subtrahend2, result;
 	private static String eWords = "";
+	private static ArrayList<Character> uChars = new ArrayList<Character>();
 	private static boolean solutionFound = false;
 	
 	private JFrame frame;
@@ -33,6 +34,7 @@ public class FYP_Cryptarithmetic_GUI{
 	private JLabel lblWord_2;
 	private JLabel lblThisIsYour;
 	private static JTextArea answer;
+	private JButton btnAddition, btnSubtraction, btnReset; 
 
 	/**
 	 * Launch the application.
@@ -111,14 +113,20 @@ public class FYP_Cryptarithmetic_GUI{
 			}
 		}
 		
-		char [] uChars = uniqueChars.toCharArray();
-		Arrays.sort(uChars);
+		char [] uniChars = uniqueChars.toCharArray();
+		Arrays.sort(uniChars);
+		
+		for(char c : uniChars){
+			uChars.add(c);
+		}
+		
+		addSearch();
 
 		permutations(digits, 0, digits.length-1);
 		
 		for(int i = 0; i < combinations.size(); i++){
-			for(int j = 0; j < uChars.length; j++){
-				letters.put(uChars[j], combinations.get(i).get(j));
+			for(int j = 0; j < uChars.size(); j++){
+				letters.put(uChars.get(j), combinations.get(i).get(j));
 			}
 			stringVal1 = getLetterValue(addend1);
 			stringVal2 = getLetterValue(addend2);
@@ -132,6 +140,12 @@ public class FYP_Cryptarithmetic_GUI{
 				for(Character l: letters.keySet()){
 					answer.append(l + " = " + letters.get(l)+";" + " ");
 				}
+				/*System.out.print("Your equation is " + addend1 + " + " + addend2 + " = " + result + "\n");
+				System.out.print("The result is " + stringVal1 + " + " + stringVal2 + " = " + stringVal3 + "\n"); // For the demo
+				System.out.print("The letter substitutions are: " + "\n");
+				for(Character l: letters.keySet()){
+					System.out.print(l + " = " + letters.get(l)+";" + " ");
+				}*/
 				count++;
 			}
 		}
@@ -139,6 +153,106 @@ public class FYP_Cryptarithmetic_GUI{
 			answer.setText("A solution could not be found");
 		}
 		
+	}
+	
+	public static void addSearch(){
+		boolean search1 = false;
+		
+		if(((result.length() - addend1.length()) >= 1) && (((result.length() - addend2.length()) >= 1))){
+			letters.put(result.charAt(0), 1);
+			letters.put(result.charAt(1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			
+			for(int i = 0; i < uChars.size(); i++){
+				if(result.charAt(0) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			
+			for(int j = 0; j < uChars.size(); j++){
+				if(result.charAt(1) == uChars.get(j)){
+					uChars.remove(j);
+				}
+			}
+			search1 = true;
+			
+			/*for(int i = 0; i < uChars.size(); i++){
+				System.out.print(uChars.get(i) + " ");
+			}
+			
+			for(int j = 0; j < digits.length; j++){
+				System.out.print(digits[j] + " ");
+			}
+			for(Character l: letters.keySet()){
+				System.out.print(l + " = " + letters.get(l)+";" + " ");
+			}*/
+		}
+		if ((addend1.charAt(addend1.length()-1) == result.charAt(result.length()-1)) && (search1 == true)){
+			letters.remove(result.charAt(1));
+			letters.put(addend2.charAt(addend2.length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend2.charAt(addend2.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(result.charAt(1));
+		}
+		if((addend1.charAt(addend1.length()-1) == result.charAt(result.length()-1)) && (search1 == false)){
+			letters.put(addend2.charAt(addend2.length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend2.charAt(addend2.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		if ((addend2.charAt(addend2.length()-1) == result.charAt(result.length()-1)) && (search1 == true)){
+			letters.remove(result.charAt(1));
+			letters.put(addend1.charAt(addend1.length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend1.charAt(addend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(result.charAt(1));
+		}
+		if((addend2.charAt(addend2.length()-1) == result.charAt(result.length()-1)) && (search1 == false)){
+			letters.put(addend1.charAt(addend1.length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend1.charAt(addend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		if ((addend1.charAt(addend1.length()-1) == result.charAt(result.length()-1)) && (addend2.charAt(addend2.length()-1) == result.charAt(result.length()-1) && (search1 == true))){
+			letters.remove(result.charAt(1));
+			letters.put(addend1.charAt(addend1.length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend1.charAt(addend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(result.charAt(1));
+		}
+		if((addend1.charAt(addend1.length()-1) == result.charAt(result.length()-1)) && (addend2.charAt(addend2.length()-1) == result.charAt(result.length()-1) && (search1 == false))){
+			letters.put(addend1.charAt(addend1.length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(addend1.charAt(addend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		
+		/*else{
+			for(int i = 0; i < digits.length; i++){
+				System.out.print(digits[i] + " ");
+			}
+		}*/
 	}
 	
 	public static void solveSubEquation(){
@@ -150,14 +264,20 @@ public class FYP_Cryptarithmetic_GUI{
 			}
 		}
 		
-		char [] uChars = uniqueChars.toCharArray();
-		Arrays.sort(uChars);
+		char [] uniChars = uniqueChars.toCharArray();
+		Arrays.sort(uniChars);
+		
+		for(char c : uniChars){
+			uChars.add(c);
+		}
+		
+		subSearch();
 
 		permutations(digits, 0, digits.length-1);
 		
 		for(int i = 0; i < combinations.size(); i++){
-			for(int j = 0; j < uChars.length; j++){
-				letters.put(uChars[j], combinations.get(i).get(j));
+			for(int j = 0; j < uChars.size(); j++){
+				letters.put(uChars.get(j), combinations.get(i).get(j));
 			}
 			stringVal1 = getLetterValue(subtrahend1);
 			stringVal2 = getLetterValue(subtrahend2);
@@ -171,11 +291,85 @@ public class FYP_Cryptarithmetic_GUI{
 				for(Character l: letters.keySet()){
 					answer.append(l + " = " + letters.get(l)+";" + " ");
 				}
+				/*System.out.print("Your equation is " + subtrahend1 + " - " + subtrahend2 + " = " + result + "\n");
+				System.out.print("The result is " + stringVal1 + " - " + stringVal2 + " = " + stringVal3 + "\n");		// For the demo
+				System.out.print("The letter substitutions are: " + "\n");
+				for(Character l: letters.keySet()){
+					System.out.print(l + " = " + letters.get(l)+";" + " ");
+				}*/				
 				count++;
 			}
 		}
 		if(!solutionFound){
 			answer.setText("A solution could not be found");
+		}
+		
+	}
+	
+	public static void subSearch(){
+		boolean search1 = false;
+		
+		if(((subtrahend1.length() - subtrahend2.length()) >= 1) && (((subtrahend1.length() - result.length()) >= 1))){
+			letters.put(subtrahend1.charAt(0), 1);
+			letters.put(subtrahend1.charAt(1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			
+			for(int i = 0; i < uChars.size(); i++){
+				if(subtrahend1.charAt(0) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			
+			for(int j = 0; j < uChars.size(); j++){
+				if(subtrahend1.charAt(1) == uChars.get(j)){
+					uChars.remove(j);
+				}
+			}
+			search1 = true;
+		}
+		
+		if((subtrahend1.charAt(subtrahend1.length()-1) == result.charAt(result.length()-1)) && (search1 == true)){
+			letters.remove(subtrahend1.charAt(1));
+			letters.put(subtrahend2.charAt(subtrahend2.length()-1), 0);
+			digits = new int[] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subtrahend2.charAt(subtrahend2.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(subtrahend1.charAt(1));
+		}
+		
+		if((subtrahend1.charAt(subtrahend1.length()-1) == result.charAt(result.length()-1)) && (search1 == false)){
+			letters.put(subtrahend2.charAt(subtrahend2.length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subtrahend2.charAt(subtrahend2.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+		}
+		
+		if ((subtrahend1.charAt(subtrahend1.length()-1) == result.charAt(result.length()-1)) && (subtrahend2.charAt(subtrahend2.length()-1) == result.charAt(result.length()-1) && (search1 == true))){
+			letters.remove(subtrahend1.charAt(1));
+			letters.put(subtrahend1.charAt(subtrahend1.length()-1), 0);
+			digits = new int [] {2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subtrahend1.charAt(subtrahend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
+			uChars.add(subtrahend1.charAt(1));
+		}
+		
+		if((subtrahend1.charAt(subtrahend1.length()-1) == result.charAt(result.length()-1)) && (subtrahend2.charAt(subtrahend2.length()-1) == result.charAt(result.length()-1) && (search1 == false))){
+			letters.put(subtrahend1.charAt(subtrahend1.length()-1), 0);
+			digits = new int[] {1,2,3,4,5,6,7,8,9};
+			for(int i = 0; i < uChars.size(); i++){
+				if(subtrahend1.charAt(subtrahend1.length()-1) == uChars.get(i)){
+					uChars.remove(i);
+				}
+			}
 		}
 		
 	}
@@ -238,12 +432,14 @@ public class FYP_Cryptarithmetic_GUI{
 	 */
 	public FYP_Cryptarithmetic_GUI() {
 		initialize();
+		Solve();
+		Restart();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 679, 403);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -285,77 +481,11 @@ public class FYP_Cryptarithmetic_GUI{
 		lblWord_2.setBounds(512, 78, 46, 14);
 		frame.getContentPane().add(lblWord_2);
 		
-		JButton btnAddition = new JButton("Addition");
-		btnAddition.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				addend1 = word1.getText().toLowerCase();
-				addend2 = word2.getText().toLowerCase();
-				result = word3.getText().toLowerCase();
-				
-				eWords = addend1 + addend2 + result;
-				
-				checkIsDigit(eWords);
-				if(checkIsDigit(eWords) == false){
-					answer.setText("You entered a digit(s) for a character(s)" + "\n");
-				}
-				
-				checkIsSpecial(eWords);
-				if(checkIsSpecial(eWords) == false){
-					answer.append("You entered a special character(s)" + "\n");
-				}
-				
-				checkUnique(eWords);
-				if(checkUnique(eWords) == false){
-					answer.append("This equation has more than 10 unique characters" + "\n");
-				}
-				checkLengths(addend1,addend2,result);
-				if (checkLengths(addend1,addend2,result) == false){
-					answer.append("The result word is smaller than an addend" + "\n");
-				}
-				
-				if((checkUnique(eWords) == true) && (checkLengths(addend1,addend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
-					solveEquation();
-				}
-			}
-		});
+		btnAddition = new JButton("Addition");
 		btnAddition.setBounds(46, 184, 117, 51);
 		frame.getContentPane().add(btnAddition);
 		
-		JButton btnSubtraction = new JButton("Subtraction");
-		btnSubtraction.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				subtrahend1 = word1.getText().toLowerCase();
-				subtrahend2 = word2.getText().toLowerCase();
-				result = word3.getText().toLowerCase();
-				
-				eWords = subtrahend1 + subtrahend2 + result;
-				
-				checkIsDigit(eWords);
-				if(checkIsDigit(eWords) == false){
-					answer.setText("You entered a digit(s) for a character(s)" + "\n");
-				}
-				
-				checkIsSpecial(eWords);
-				if(checkIsSpecial(eWords) == false){
-					answer.append("You entered a special character(s)" + "\n");
-				}
-				
-				checkUnique(eWords);
-				if(checkUnique(eWords) == false){
-					answer.append("This equation has more than 10 unique characters" + "\n");
-				}
-				
-				checkLengths2(subtrahend1,subtrahend2,result);
-				if (checkLengths2(subtrahend1,subtrahend2,result) == false){
-					answer.append("The result word is bigger than a subtrahend" + "\n");
-				}
-				
-				if((checkUnique(eWords) == true) && (checkLengths2(subtrahend1,subtrahend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
-					solveSubEquation();
-				}
-			}
-		});
+		btnSubtraction = new JButton("Subtraction");
 		btnSubtraction.setBounds(271, 184, 117, 51);
 		frame.getContentPane().add(btnSubtraction);
 		
@@ -369,18 +499,98 @@ public class FYP_Cryptarithmetic_GUI{
 		frame.getContentPane().add(answer);
 		answer.setColumns(10);
 		
-		JButton btnReset = new JButton("Reset");
-		btnReset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				restart();
-			}
-		});
+		btnReset = new JButton("Reset");
 		btnReset.setBounds(480, 184, 117, 51);
 		frame.getContentPane().add(btnReset);
 	}
 	
-	public static void restart(){
-		FYP_Cryptarithmetic_GUI restart = new FYP_Cryptarithmetic_GUI();
-		restart.initialize();
+	public void Solve(){
+		btnAddition.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				if(e.getSource() == btnAddition){
+					addend1 = word1.getText().toLowerCase();
+					addend2 = word2.getText().toLowerCase();
+					result = word3.getText().toLowerCase();
+					
+					eWords = addend1 + addend2 + result;
+					
+					checkIsDigit(eWords);
+					if(checkIsDigit(eWords) == false){
+						answer.setText("You entered a digit(s) for a character(s)" + "\n");
+					}
+					
+					checkIsSpecial(eWords);
+					if(checkIsSpecial(eWords) == false){
+						answer.append("You entered a special character(s)" + "\n");
+					}
+					
+					checkUnique(eWords);
+					if(checkUnique(eWords) == false){
+						answer.append("This equation has more than 10 unique characters" + "\n");
+					}
+					checkLengths(addend1,addend2,result);
+					if (checkLengths(addend1,addend2,result) == false){
+						answer.append("The result word is smaller than an addend" + "\n");
+					}
+					
+					if((checkUnique(eWords) == true) && (checkLengths(addend1,addend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
+						solveEquation();
+					}
+				}
+			}
+		});
+		
+		btnSubtraction.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				if(e.getSource() == btnSubtraction){
+					subtrahend1 = word1.getText().toLowerCase();
+					subtrahend2 = word2.getText().toLowerCase();
+					result = word3.getText().toLowerCase();
+					
+					eWords = subtrahend1 + subtrahend2 + result;
+					
+					checkIsDigit(eWords);
+					if(checkIsDigit(eWords) == false){
+						answer.setText("You entered a digit(s) for a character(s)" + "\n");
+					}
+					
+					checkIsSpecial(eWords);
+					if(checkIsSpecial(eWords) == false){
+						answer.append("You entered a special character(s)" + "\n");
+					}
+					
+					checkUnique(eWords);
+					if(checkUnique(eWords) == false){
+						answer.append("This equation has more than 10 unique characters" + "\n");
+					}
+					
+					checkLengths2(subtrahend1,subtrahend2,result);
+					if (checkLengths2(subtrahend1,subtrahend2,result) == false){
+						answer.append("The result word is bigger than a subtrahend" + "\n");
+					}
+					
+					if((checkUnique(eWords) == true) && (checkLengths2(subtrahend1,subtrahend2,result) == true) && (checkIsDigit(eWords) == true) && (checkIsSpecial(eWords) == true)){
+						solveSubEquation();
+					}
+				}
+			}
+		});
+	}
+	
+	public void Restart(){
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				if(e.getSource() == btnReset){
+					word1.setText("");
+					word2.setText("");
+					word3.setText("");
+					answer.setText("");
+					FYP_Cryptarithmetic_GUI restart = new FYP_Cryptarithmetic_GUI();
+					restart.initialize();
+					restart.Solve();
+					restart.Restart();
+				}
+			}
+		});
 	}
 }
